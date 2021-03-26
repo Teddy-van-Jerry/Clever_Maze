@@ -90,11 +90,22 @@ void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coord
         if(path.top() == exit_)
         {
             QVector<Coordinate> one_path(path);
-            QStack<Coordinate> tmp = path;
             vec.push_back(one_path);
+            for(auto& c : one_path)
+            {
+                if(Map[c.x][c.y] == ENTRANCE || Map[c.x][c.y] == EXIT) continue;
+                Map[c.x][c.y] = ACCESSIBLE;
+            }
+            for(auto& c : one_path)
+            {
+                if(Map[c.x][c.y] == ENTRANCE || Map[c.x][c.y] == EXIT) continue;
+                Map[c.x][c.y] = VISITED;
+                findPath_DFS(Map, vec);
+                Map[c.x][c.y] = ACCESSIBLE;
+            }
             return;
         }
-        Map[path.top().x][path.top().y] = VISITED;
+        if(Map[path.top().x][path.top().y] != ENTRANCE) Map[path.top().x][path.top().y] = VISITED;
         if(canBeNexted(Map, path.top().x + 1, path.top().y))
         {
             path.push(Coordinate(path.top().x + 1, path.top().y));
