@@ -45,6 +45,25 @@ void MainWindow::paintEvent(QPaintEvent* event)
                              colour);
         }
     }
+
+    if(drawSolution)
+    {
+        for(int i = 0; i + 1 < solutions[ui->spinBox_SolutionNo->value()].size(); i++)
+        {
+            qDebug() << "drawLine";
+            QPen solution_pen;
+            solution_pen.setWidth(5);
+            solution_pen.setColor(QColor(255,0,0));
+            solution_pen.setStyle(Qt::DotLine);
+
+            painter.setPen(solution_pen);
+            int x1 = Margin_L + (solutions[ui->spinBox_SolutionNo->value()][i].y + 0.5) * Max_X / C_;
+            int y1 = Margin_T + (solutions[ui->spinBox_SolutionNo->value()][i].x + 0.5) * Max_Y / R_;
+            int x2 = Margin_L + (solutions[ui->spinBox_SolutionNo->value()][i + 1].y + 0.5) * Max_X / C_;
+            int y2 = Margin_T + (solutions[ui->spinBox_SolutionNo->value()][i + 1].x + 0.5) * Max_Y / R_;
+            painter.drawLine(x1, y1, x2, y2);
+        }
+    }
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event)
@@ -160,17 +179,26 @@ void MainWindow::on_toolBox_currentChanged(int index)
 
 void MainWindow::on_actionSolution_triggered()
 {
-    QVector<QVector<Coordinate>> solutions;
+    solutions.clear();
     findPath_DFS(map, solutions);
+    std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
+    // need actions to unique
+
     qDebug() << "Number of Solutions: " << solutions.size();
-    for(const auto& solution : solutions)
+    ui->spinBox_SolutionNo->setMaximum(solutions.size());
+
+    drawSolution = true;
+    update();
+    // drawSolution = false;
+
+    /*for(const auto& solution : solutions)
     {
         qDebug() << "* ";
         for(const auto& c : solution)
         {
             qDebug() << c.x << c.y << "->";
         }
-    }
+    }*/
 }
 
 /*

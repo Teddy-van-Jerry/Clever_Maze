@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QPoint>
 #include <QStack>
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -62,7 +63,11 @@ public:
 
     bool started = false;
 
+    bool drawSolution = false;
+
     Coordinate entrance_, exit_;
+
+    QVector<QVector<Coordinate>> solutions;
 
     void paintEvent(QPaintEvent* event);
 
