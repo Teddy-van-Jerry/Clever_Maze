@@ -21,12 +21,12 @@ struct Coordinate
     int x = 0;
     int y = 0;
 
-    inline bool operator==(const Coordinate& n)
+    inline bool operator==(const Coordinate& n) const
     {
         return x == n.x && y == n.y;
     }
 
-    inline bool operator!=(const Coordinate& n)
+    inline bool operator!=(const Coordinate& n) const
     {
         return !(*this == n);
     }
@@ -40,7 +40,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    enum MODE{DESIGN, GAME} mode;
+    enum MODE{DESIGN, GAME} mode = DESIGN;
 
     enum POINT{ACCESSIBLE, INACCESSIBLE, ENTRANCE, EXIT, VISITED};
 
@@ -64,6 +64,8 @@ public:
     bool started = false;
 
     bool drawSolution = false;
+
+    bool solution_updated = false;
 
     Coordinate entrance_, exit_;
 

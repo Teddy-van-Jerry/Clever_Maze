@@ -48,7 +48,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
 
     if(drawSolution)
     {
-        for(int i = 0; i + 1 < solutions[ui->spinBox_SolutionNo->value()].size(); i++)
+        for(int i = 0; i + 1 < solutions[ui->spinBox_SolutionNo->value() - 1].size(); i++)
         {
             qDebug() << "drawLine";
             QPen solution_pen;
@@ -57,10 +57,10 @@ void MainWindow::paintEvent(QPaintEvent* event)
             solution_pen.setStyle(Qt::DotLine);
 
             painter.setPen(solution_pen);
-            int x1 = Margin_L + (solutions[ui->spinBox_SolutionNo->value()][i].y + 0.5) * Max_X / C_;
-            int y1 = Margin_T + (solutions[ui->spinBox_SolutionNo->value()][i].x + 0.5) * Max_Y / R_;
-            int x2 = Margin_L + (solutions[ui->spinBox_SolutionNo->value()][i + 1].y + 0.5) * Max_X / C_;
-            int y2 = Margin_T + (solutions[ui->spinBox_SolutionNo->value()][i + 1].x + 0.5) * Max_Y / R_;
+            int x1 = Margin_L + (solutions[ui->spinBox_SolutionNo->value() - 1][i].y + 0.5) * Max_X / C_;
+            int y1 = Margin_T + (solutions[ui->spinBox_SolutionNo->value() - 1][i].x + 0.5) * Max_Y / R_;
+            int x2 = Margin_L + (solutions[ui->spinBox_SolutionNo->value() - 1][i + 1].y + 0.5) * Max_X / C_;
+            int y2 = Margin_T + (solutions[ui->spinBox_SolutionNo->value() - 1][i + 1].x + 0.5) * Max_Y / R_;
             painter.drawLine(x1, y1, x2, y2);
         }
     }
@@ -68,6 +68,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event)
 {
+    if (mode == GAME) return;
     int Margin_L = 50;
     int Margin_R = 10;
     int Margin_T = 35;
@@ -85,6 +86,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event)
     int index_1 = (y - Margin_T) * R_ / Max_Y;
     map[index_1][index_2] = p;
     qDebug() << Max_X << Max_Y << index_1 << index_2;
+    drawSolution = false;
+    solution_updated = false;
     update();
     // qDebug() << Max_X;
     // QMessageBox::information(this, "Clicked", QString::number(event->pos().x()) + "," + QString::number(event->pos().y()));
@@ -109,6 +112,7 @@ void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coord
         if(path.top() == exit_)
         {
             QVector<Coordinate> one_path(path);
+            if(vec.contains(one_path)) return; // If it is a duplicate, discard it.
             vec.push_back(one_path);
             for(auto& c : one_path)
             {
@@ -161,6 +165,8 @@ void MainWindow::on_spinBox_Row_valueChanged(int arg1)
     QVector<POINT> row(ui->spinBox_Column->value(), ACCESSIBLE);
     map.clear();
     for(int i = 0; i != arg1; i++) map.push_back(row);
+    drawSolution = false;
+    solution_updated = false;
     update();
 }
 
@@ -169,6 +175,8 @@ void MainWindow::on_spinBox_Column_valueChanged(int arg1)
     QVector<POINT> row(arg1, ACCESSIBLE);
     map.clear();
     for(int i = 0; i != ui->spinBox_Row->value(); i++) map.push_back(row);
+    drawSolution = false;
+    solution_updated = false;
     update();
 }
 
@@ -179,10 +187,13 @@ void MainWindow::on_toolBox_currentChanged(int index)
 
 void MainWindow::on_actionSolution_triggered()
 {
-    solutions.clear();
-    findPath_DFS(map, solutions);
-    std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
-    // need actions to unique
+    if(!solution_updated)
+    {
+        solutions.clear();
+        findPath_DFS(map, solutions);
+        std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
+    }
+    solution_updated = true;
 
     qDebug() << "Number of Solutions: " << solutions.size();
     ui->spinBox_SolutionNo->setMaximum(solutions.size());
@@ -200,99 +211,3 @@ void MainWindow::on_actionSolution_triggered()
         }
     }*/
 }
-
-/*
- * bool turning_back = false;
-    QVector<QVector<POINT>> all = map;
-    Coordinate hot = entrance_;
-    QStack<Coordinate> path;
-    path.push(entrance_);
-    while(1)
-    {
-        if (path.empty()) break;
-        all[path.top().x][path.top().y].visited_ = true;
-        if (all[path.top().x][path.top().y].state_ == EXIT)
-        {
-            QVector<Coordinate> one_path;
-            QStack<Coordinate> tmp_stack(path);
-            while(!tmp_stack.empty()) one_path.push_back(tmp_stack.pop());
-            vec.push_back(one_path);
-            Coordinate tmp = path.pop();
-            if(path.empty()) break;
-            if(path.top().x == tmp.x)
-            {
-                if(path.top().y < tmp.y)
-                    all[tmp.x][tmp.y].T_ok = false;
-                else
-                    all[tmp.x][tmp.y].B_ok = false;
-            }
-            else
-            {
-                if(path.top().x < tmp.x)
-                    all[tmp.x][tmp.y].L_ok = false;
-                else
-                    all[tmp.x][tmp.y].R_ok = false;
-            }
-            turning_back = true;
-        }
-        else
-        {
-            if (path.top().x + 1 < map[0].size() &&
-                    all[path.top().x + 1][path.top().y].state_ == ACCESSIBLE &&
-                    all[path.top().x + 1][path.top().y].visited_ == false &&
-                    (!turning_back || all[path.top().x + 1][path.top().y].L_ok))
-            {
-                path.push(Coordinate(path.top().x + 1, path.top().y));
-                all[path.top().x + 1][path.top().y].visited_ = true;
-                turning_back = false;
-            }
-            else if (path.top().x < 1 + map[0].size() &&
-                     all[path.top().x - 1][path.top().y].state_ == ACCESSIBLE &&
-                     all[path.top().x - 1][path.top().y].visited_ == false &&
-                     (!turning_back || all[path.top().x - 1][path.top().y].R_ok))
-            {
-                path.push(Coordinate(path.top().x - 1, path.top().y));
-                all[path.top().x - 1][path.top().y].visited_ = true;
-                turning_back = false;
-            }
-            else if (path.top().y + 1 < map.size() &&
-                     all[path.top().x][path.top().y + 1].state_ == ACCESSIBLE &&
-                     all[path.top().x][path.top().y + 1].visited_ == false &&
-                     (!turning_back || all[path.top().x][path.top().y + 1].T_ok))
-            {
-                path.push(Coordinate(path.top().x, path.top().y + 1));
-                all[path.top().x][path.top().y + 1].visited_ = true;
-                turning_back = false;
-            }
-            else if (path.top().y < 1 + map.size() &&
-                     all[path.top().x][path.top().y - 1].state_ == ACCESSIBLE &&
-                     all[path.top().x][path.top().y - 1].visited_ == false &&
-                     (!turning_back || all[path.top().x][path.top().y - 1].B_ok))
-            {
-                path.push(Coordinate(path.top().x, path.top().y + 1));
-                all[path.top().x + 1][path.top().y].visited_ = true;
-                turning_back = false;
-            }
-            else
-            {
-                Coordinate tmp = path.pop();
-                if(path.empty()) break;
-                if(path.top().x == tmp.x)
-                {
-                    if(path.top().y < tmp.y)
-                        all[tmp.x][tmp.y].T_ok = false;
-                    else
-                        all[tmp.x][tmp.y].B_ok = false;
-                }
-                else
-                {
-                    if(path.top().x < tmp.x)
-                        all[tmp.x][tmp.y].L_ok = false;
-                    else
-                        all[tmp.x][tmp.y].R_ok = false;
-                }
-                turning_back = true;
-            }
-        }
-    }
-*/
