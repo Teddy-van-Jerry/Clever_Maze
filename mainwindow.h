@@ -71,6 +71,8 @@ public:
 
     QVector<QVector<Coordinate>> solutions;
 
+    int show_solution_number = 0;
+
     void paintEvent(QPaintEvent* event);
 
     void mouseReleaseEvent(QMouseEvent* event);
@@ -87,6 +89,10 @@ private slots:
     void on_toolBox_currentChanged(int index);
 
     void on_actionSolution_triggered();
+
+    void on_pushButton_Solution_clicked();
+
+    void on_actionSolution_by_Step_triggered();
 
 private:
     Ui::MainWindow *ui;

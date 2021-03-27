@@ -48,9 +48,9 @@ void MainWindow::paintEvent(QPaintEvent* event)
 
     if(drawSolution)
     {
-        for(int i = 0; i + 1 < solutions[ui->spinBox_SolutionNo->value() - 1].size(); i++)
+        for(int i = 0; i < show_solution_number; i++)
         {
-            qDebug() << "drawLine";
+            // qDebug() << "drawLine";
             QPen solution_pen;
             solution_pen.setWidth(5);
             solution_pen.setColor(QColor(255,0,0));
@@ -88,6 +88,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event)
     qDebug() << Max_X << Max_Y << index_1 << index_2;
     drawSolution = false;
     solution_updated = false;
+    ui->progressBar_Step->setValue(0);
     update();
     // qDebug() << Max_X;
     // QMessageBox::information(this, "Clicked", QString::number(event->pos().x()) + "," + QString::number(event->pos().y()));
@@ -167,6 +168,7 @@ void MainWindow::on_spinBox_Row_valueChanged(int arg1)
     for(int i = 0; i != arg1; i++) map.push_back(row);
     drawSolution = false;
     solution_updated = false;
+    ui->progressBar_Step->setValue(0);
     update();
 }
 
@@ -177,6 +179,7 @@ void MainWindow::on_spinBox_Column_valueChanged(int arg1)
     for(int i = 0; i != ui->spinBox_Row->value(); i++) map.push_back(row);
     drawSolution = false;
     solution_updated = false;
+    ui->progressBar_Step->setValue(0);
     update();
 }
 
@@ -192,13 +195,15 @@ void MainWindow::on_actionSolution_triggered()
         solutions.clear();
         findPath_DFS(map, solutions);
         std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
+        ui->spinBox_SolutionNo->setMaximum(solutions.size());
     }
     solution_updated = true;
 
     qDebug() << "Number of Solutions: " << solutions.size();
-    ui->spinBox_SolutionNo->setMaximum(solutions.size());
 
+    show_solution_number = solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1;
     drawSolution = true;
+    ui->progressBar_Step->setValue(100);
     update();
     // drawSolution = false;
 
@@ -210,4 +215,33 @@ void MainWindow::on_actionSolution_triggered()
             qDebug() << c.x << c.y << "->";
         }
     }*/
+}
+
+void MainWindow::on_pushButton_Solution_clicked()
+{
+    on_actionSolution_triggered();
+}
+
+void MainWindow::on_actionSolution_by_Step_triggered()
+{
+    if(!solution_updated)
+    {
+        solutions.clear();
+        findPath_DFS(map, solutions);
+        std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
+        ui->spinBox_SolutionNo->setMaximum(solutions.size());
+    }
+    solution_updated = true;
+    if(show_solution_number == solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1)
+    {
+        show_solution_number = 0;
+    }
+    show_solution_number++;
+    ui->progressBar_Step->setValue(100 * show_solution_number / (solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1));
+    update();
+}
+
+void MainWindow::on_pushButton_Step_clicked()
+{
+    on_actionSolution_by_Step_triggered();
 }
