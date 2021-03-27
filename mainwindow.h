@@ -10,6 +10,7 @@
 #include <QPoint>
 #include <QStack>
 #include <QQueue>
+#include <QTimer>
 #include <algorithm>
 #include "configuration.h"
 
@@ -71,7 +72,11 @@ public:
 
     bool solution_updated = false;
 
-    Coordinate entrance_, exit_;
+    bool show_maze = true; // only used in GAME mode
+
+    bool show_current = false;
+
+    Coordinate entrance_, exit_, current_location;
 
     QVector<QVector<Coordinate>> solutions;
 
@@ -79,7 +84,11 @@ public:
 
     int DFS_solution_limit = 10000;
 
+    QTimer* timer;
+
     void paintEvent(QPaintEvent* event);
+
+    void keyPressEvent(QKeyEvent *event);
 
     void mouseReleaseEvent(QMouseEvent* event);
 
@@ -90,6 +99,9 @@ public:
     void findPath(const QVector<QVector<POINT>>&, QVector<QVector<Coordinate>>&);
 
     bool canBeNexted(const QVector<QVector<POINT>>& Map, int i, int j);
+
+public slots:
+    void updateTime();
 
 private slots:
     void on_spinBox_Row_valueChanged(int arg1);
@@ -107,6 +119,10 @@ private slots:
     void on_pushButton_Step_clicked();
 
     void on_actionConfiguration_triggered();
+
+    void on_commandLinkButton_Start_clicked();
+
+    void on_actionStop_triggered();
 
 private:
 

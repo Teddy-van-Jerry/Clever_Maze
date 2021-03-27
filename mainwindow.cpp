@@ -7,22 +7,36 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     on_spinBox_Row_valueChanged(10);
+    timer = new QTimer(this);
+    setFocusPolicy(Qt::StrongFocus);
+    this->grabKeyboard();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete timer;
 }
 
 void MainWindow::paintEvent(QPaintEvent* event)
 {
-    QPainter painter(this);
     int Margin_L = 50;
     int Margin_R = 10;
     int Margin_T = 35;
     int Margin_B = 10;
     int Max_X = window()->width() * 2 / 3 - Margin_L - Margin_R;
     int Max_Y = window()->height() - Margin_T - Margin_B;
+
+    QPainter painter(this);
+
+    if(mode == GAME && !show_maze)
+    {
+        //painter.eraseRect(Margin_L, Margin_T, Max_X + 1, Max_Y + 1);
+        setAutoFillBackground(true);
+        qDebug() << "erase";
+        return;
+    }
+
     int R_ = ui->spinBox_Row->value();
     int C_ = ui->spinBox_Column->value();
     for(int i = 0; i != R_; i++)
@@ -64,10 +78,48 @@ void MainWindow::paintEvent(QPaintEvent* event)
             painter.drawLine(x1, y1, x2, y2);
         }
     }
+
+    if(show_current)
+    {
+        // painter.setBrush(QColor(qRgba(255, 255, 255, 150)));
+        painter.drawImage(QRectF(Margin_L + current_location.y * Max_X / C_, Margin_T + current_location.x * Max_Y / R_, Max_X / C_ + 1, Max_Y / R_ + 1),
+                          QImage(":/Images/Current.png"));
+    }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+    case Qt::Key_Left:
+        qDebug() << "left";
+        if(canBeNexted(map, current_location.x, current_location.y - 1)) current_location.y--;
+        break;
+    case Qt::Key_Right:
+        qDebug() << "right";
+        if(canBeNexted(map, current_location.x, current_location.y + 1)) current_location.y++;
+        break;
+    case Qt::Key_Up:
+        qDebug() << "up";
+        if(canBeNexted(map, current_location.x - 1, current_location.y)) current_location.x--;
+        break;
+    case Qt::Key_Down:
+        qDebug() << "down";
+        if(canBeNexted(map, current_location.x + 1, current_location.y)) current_location.x++;
+        break;
+    default:
+        break;
+    }
+    update();
+    if(current_location != entrance_ && current_location == exit_)
+    {
+        QMessageBox::information(this, "You Win", "You have found the path of the maze");
+    }
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event)
 {
+    if(event->button() != Qt::LeftButton) return;
     if (mode == GAME) return;
     int Margin_L = 50;
     int Margin_R = 10;
@@ -262,10 +314,14 @@ void MainWindow::on_spinBox_Column_valueChanged(int arg1)
 void MainWindow::on_toolBox_currentChanged(int index)
 {
     mode = MODE(index);
+    if(mode == GAME) show_maze = false;
+    qDebug() << "Page changed:" << index;
+    update();
 }
 
 void MainWindow::on_actionSolution_triggered()
 {
+    show_maze = true;
     if(!solution_updated)
     {
         solutions.clear();
@@ -296,6 +352,7 @@ void MainWindow::on_pushButton_Solution_clicked()
 
 void MainWindow::on_actionSolution_by_Step_triggered()
 {
+    show_maze = true;
     if(!solution_updated)
     {
         solutions.clear();
@@ -329,4 +386,36 @@ void MainWindow::on_actionConfiguration_triggered()
 {
     Configuration* config = new Configuration(this);
     config->show();
+}
+
+void MainWindow::on_commandLinkButton_Start_clicked()
+{
+    // mark the starting point and the finished.
+    for (int i = 0; i != map.size(); i++)
+    {
+        for (int j = 0; j!= map[i].size(); j++)
+        {
+            if(map[i][j] == ENTRANCE) entrance_ = {i, j};
+            if(map[i][j] == EXIT)     exit_     = {i, j};
+        }
+    }
+    current_location = entrance_;
+
+    show_maze = true;
+    show_current = true;
+    update();
+    timer->start(1000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+
+    // setFocusPolicy(Qt::StrongFocus);
+}
+
+void MainWindow::updateTime()
+{
+    ui->lcdNumber_Time->display(ui->lcdNumber_Time->intValue() + 1);
+}
+
+void MainWindow::on_actionStop_triggered()
+{
+    timer->stop();
 }

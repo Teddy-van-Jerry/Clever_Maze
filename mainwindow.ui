@@ -40,7 +40,7 @@
     <item row="1" column="1">
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_Design">
        <property name="geometry">
@@ -315,7 +315,7 @@
          </widget>
         </item>
         <item row="5" column="1">
-         <widget class="QLCDNumber" name="lcdNumber_2"/>
+         <widget class="QLCDNumber" name="lcdNumber_Step"/>
         </item>
         <item row="5" column="0">
          <widget class="QLabel" name="label_5">
@@ -328,7 +328,7 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLCDNumber" name="lcdNumber">
+         <widget class="QLCDNumber" name="lcdNumber_Time">
           <property name="smallDecimalPoint">
            <bool>false</bool>
           </property>
