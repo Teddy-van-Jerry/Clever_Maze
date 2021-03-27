@@ -40,7 +40,7 @@
     <item row="1" column="1">
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_Design">
        <property name="geometry">
@@ -55,53 +55,7 @@
         <string>Design</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Row Count</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="spinBox_Row">
-          <property name="minimum">
-           <number>2</number>
-          </property>
-          <property name="maximum">
-           <number>50</number>
-          </property>
-          <property name="value">
-           <number>10</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Column Count</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QSpinBox" name="spinBox_Column">
-          <property name="minimum">
-           <number>2</number>
-          </property>
-          <property name="maximum">
-           <number>50</number>
-          </property>
-          <property name="value">
-           <number>10</number>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
+        <item row="5" column="0">
          <widget class="QLabel" name="label_Set_As">
           <property name="text">
            <string>Set As</string>
@@ -111,7 +65,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="5" column="1">
          <widget class="QComboBox" name="comboBox">
           <item>
            <property name="text">
@@ -136,46 +90,155 @@
          </widget>
         </item>
         <item row="3" column="0" colspan="2">
-         <widget class="QPushButton" name="pushButton_Check">
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Check the Maze</string>
+           <string>Column Count</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="4" column="0" colspan="2">
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="spinBox_Row">
+          <property name="minimum">
+           <number>2</number>
+          </property>
+          <property name="maximum">
+           <number>50</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0" colspan="2">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="9" column="0" colspan="2">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
            <string>Auto Maze Options</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="spinBox_3"/>
+           </item>
+           <item row="4" column="0" colspan="3">
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>Auto Maze Go!</string>
+             </property>
+             <property name="icon">
+              <iconset resource="Icons.qrc">
+               <normaloff>:/Menu Icon/Create Video.svg</normaloff>:/Menu Icon/Create Video.svg</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QSpinBox" name="spinBox_5"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QSpinBox" name="spinBox_4"/>
+           </item>
+           <item row="1" column="0">
             <widget class="QLabel" name="label_3">
              <property name="text">
               <string>Entrence at</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="spinBox_3"/>
+           <item row="3" column="2">
+            <widget class="QSpinBox" name="spinBox_6"/>
            </item>
-           <item row="0" column="2">
-            <widget class="QSpinBox" name="spinBox_4"/>
-           </item>
-           <item row="1" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="label_4">
              <property name="text">
               <string>Exit at</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QSpinBox" name="spinBox_5"/>
-           </item>
-           <item row="1" column="2">
-            <widget class="QSpinBox" name="spinBox_6"/>
-           </item>
           </layout>
          </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="spinBox_Column">
+          <property name="minimum">
+           <number>2</number>
+          </property>
+          <property name="maximum">
+           <number>50</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Row Count</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0" colspan="2">
+         <widget class="QPushButton" name="pushButton_Check">
+          <property name="text">
+           <string>Check the Maze</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="2">
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -192,65 +255,18 @@
         <string>Game</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1">
-        <item row="4" column="0" colspan="2">
-         <widget class="QLabel" name="label_Time_2">
-          <property name="text">
-           <string>Solution View</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QPushButton" name="pushButton_Step">
-          <property name="text">
-           <string>Step by Step</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QLabel" name="label_Time">
-          <property name="text">
-           <string>Time Used</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0" colspan="2">
-         <widget class="QLCDNumber" name="lcdNumber">
-          <property name="smallDecimalPoint">
-           <bool>false</bool>
-          </property>
-          <property name="digitCount">
-           <number>5</number>
-          </property>
-          <property name="value" stdset="0">
-           <double>0.000000000000000</double>
-          </property>
-          <property name="intValue" stdset="0">
-           <number>0</number>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QProgressBar" name="progressBar_Step">
-          <property name="value">
-           <number>0</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
+        <item row="8" column="0">
          <widget class="QPushButton" name="pushButton_Solution">
           <property name="text">
            <string>View Solution</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="8" column="1">
          <widget class="QSpinBox" name="spinBox_SolutionNo">
+          <property name="prefix">
+           <string>Solution </string>
+          </property>
           <property name="minimum">
            <number>1</number>
           </property>
@@ -274,11 +290,74 @@
           </property>
          </widget>
         </item>
+        <item row="9" column="0">
+         <widget class="QPushButton" name="pushButton_Step">
+          <property name="text">
+           <string>Step by Step</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QProgressBar" name="progressBar_Step">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="2">
+         <widget class="QLabel" name="label_Time_2">
+          <property name="text">
+           <string>Solution View</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLCDNumber" name="lcdNumber_2"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Step Used</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLCDNumber" name="lcdNumber">
+          <property name="smallDecimalPoint">
+           <bool>false</bool>
+          </property>
+          <property name="digitCount">
+           <number>5</number>
+          </property>
+          <property name="value" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_Time">
+          <property name="text">
+           <string>Time Used</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="2">
+    <item row="1" column="0">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -317,26 +396,6 @@
     <addaction name="actionClose"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuEdit_E">
-    <property name="title">
-     <string>Edit(&amp;E)</string>
-    </property>
-    <addaction name="actionAuto_Maze"/>
-    <addaction name="separator"/>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
-    <addaction name="actionClear"/>
-   </widget>
-   <widget class="QMenu" name="menuMaze_M">
-    <property name="title">
-     <string>Maze(&amp;M)</string>
-    </property>
-    <addaction name="actionSolution"/>
-    <addaction name="actionSolution_by_Step"/>
-    <addaction name="actionStop"/>
-    <addaction name="separator"/>
-    <addaction name="actionCheck_Maze"/>
-   </widget>
    <widget class="QMenu" name="menuHelp_H">
     <property name="title">
      <string>Help(&amp;H)</string>
@@ -371,8 +430,6 @@
     <addaction name="actionCheck_Update"/>
    </widget>
    <addaction name="menuFile_F"/>
-   <addaction name="menuEdit_E"/>
-   <addaction name="menuMaze_M"/>
    <addaction name="menuHelp_H"/>
    <addaction name="menuMore_O"/>
   </widget>

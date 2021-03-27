@@ -94,7 +94,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event)
     // QMessageBox::information(this, "Clicked", QString::number(event->pos().x()) + "," + QString::number(event->pos().y()));
 }
 
-void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coordinate>>& vec)
+void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coordinate>>& Solutions)
 {
     // mark the starting point and the finished.
     for (int i = 0; i != map.size(); i++)
@@ -109,12 +109,21 @@ void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coord
     path.push(entrance_);
     while(1)
     {
+        if(DFS_solution_limit == Solutions.size())
+        {
+            if(!Stop_DFS_showed)
+            {
+                QMessageBox::information(this, "Path Finding Stopped", "So far there are already " + QString::number(DFS_solution_limit) + " solutions.");
+                Stop_DFS_showed = true;
+            }
+            return;
+        }
         if(path.empty()) return;
         if(path.top() == exit_)
         {
             QVector<Coordinate> one_path(path);
-            if(vec.contains(one_path)) return; // If it is a duplicate, discard it.
-            vec.push_back(one_path);
+            if(Solutions.contains(one_path)) return; // If it is a duplicate, discard it.
+            Solutions.push_back(one_path);
             for(auto& c : one_path)
             {
                 if(Map[c.x][c.y] == ENTRANCE || Map[c.x][c.y] == EXIT) continue;
@@ -124,7 +133,7 @@ void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coord
             {
                 if(Map[c.x][c.y] == ENTRANCE || Map[c.x][c.y] == EXIT) continue;
                 Map[c.x][c.y] = VISITED;
-                findPath_DFS(Map, vec);
+                findPath_DFS(Map, Solutions);
                 Map[c.x][c.y] = ACCESSIBLE;
             }
             return;
@@ -150,6 +159,73 @@ void MainWindow::findPath_DFS(QVector<QVector<POINT>> Map, QVector<QVector<Coord
         {
             path.pop();
         }
+    }
+}
+
+void MainWindow::findPath_BFS(QVector<QVector<POINT>> Map, QVector<QVector<Coordinate>>& Solutions)
+{
+    // mark the starting point and the finished.
+    for (int i = 0; i != map.size(); i++)
+    {
+        for (int j = 0; j!= map[i].size(); j++)
+        {
+            if(map[i][j] == ENTRANCE) entrance_ = {i, j};
+            if(map[i][j] == EXIT)     exit_     = {i, j};
+        }
+    }
+    QVector<Coordinate> init_vec {entrance_};
+    QVector<QVector<Coordinate>> line_vec(Map[0].size(), init_vec);
+    QVector<QVector<QVector<Coordinate>>> map_of_current_paths(Map.size(), line_vec);
+    QQueue<Coordinate> front_;
+    front_.push_front(entrance_);
+    while(1)
+    {
+        if(front_.empty()) return; // No solution
+        if(front_.front() == exit_)
+        {
+            Solutions.push_back(map_of_current_paths[exit_.x][exit_.y]);
+            return;
+        }
+        if(Map[front_.back().x][front_.back().y] != ENTRANCE) Map[front_.back().x][front_.back().y] = VISITED;
+        if(canBeNexted(Map, front_.back().x + 1, front_.back().y))
+        {
+            map_of_current_paths[front_.back().x + 1][front_.back().y] = map_of_current_paths[front_.back().x][front_.back().y];
+            map_of_current_paths[front_.back().x + 1][front_.back().y].push_back(Coordinate(front_.back().x + 1, front_.back().y));
+            front_.push_front(Coordinate(front_.back().x + 1, front_.back().y));
+        }
+        if(canBeNexted(Map, front_.back().x - 1, front_.back().y))
+        {
+            map_of_current_paths[front_.back().x - 1][front_.back().y] = map_of_current_paths[front_.back().x][front_.back().y];
+            map_of_current_paths[front_.back().x - 1][front_.back().y].push_back(Coordinate(front_.back().x - 1, front_.back().y));
+            front_.push_front(Coordinate(front_.back().x - 1, front_.back().y));
+        }
+        if(canBeNexted(Map, front_.back().x, front_.back().y + 1))
+        {
+            map_of_current_paths[front_.back().x][front_.back().y + 1] = map_of_current_paths[front_.back().x][front_.back().y];
+            map_of_current_paths[front_.back().x][front_.back().y + 1].push_back(Coordinate(front_.back().x, front_.back().y + 1));
+            front_.push_front(Coordinate(front_.back().x, front_.back().y + 1));
+        }
+        if(canBeNexted(Map, front_.back().x, front_.back().y - 1))
+        {
+            map_of_current_paths[front_.back().x][front_.back().y - 1] = map_of_current_paths[front_.back().x][front_.back().y];
+            map_of_current_paths[front_.back().x][front_.back().y - 1].push_back(Coordinate(front_.back().x, front_.back().y - 1));
+            front_.push_front(Coordinate(front_.back().x, front_.back().y - 1));
+        }
+        // map_of_current_paths[front_.back().x][front_.back().y].clear();
+        front_.pop_back();
+    }
+}
+
+void MainWindow::findPath(const QVector<QVector<POINT>>& Map, QVector<QVector<Coordinate>>& Solutions)
+{
+    if(find_path_method == DFS)
+    {
+        Stop_DFS_showed = false;
+        findPath_DFS(Map, Solutions);
+    }
+    else
+    {
+        findPath_BFS(Map, Solutions);
     }
 }
 
@@ -193,7 +269,7 @@ void MainWindow::on_actionSolution_triggered()
     if(!solution_updated)
     {
         solutions.clear();
-        findPath_DFS(map, solutions);
+        findPath(map, solutions);
         std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
         ui->spinBox_SolutionNo->setMaximum(solutions.size());
     }
@@ -201,20 +277,16 @@ void MainWindow::on_actionSolution_triggered()
 
     qDebug() << "Number of Solutions: " << solutions.size();
 
+    if(solutions.size() == 0)
+    {
+        QMessageBox::information(this, "Cannot find the path.", "This maze is unsolvable.");
+        return;
+    }
+
     show_solution_number = solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1;
     drawSolution = true;
     ui->progressBar_Step->setValue(100);
     update();
-    // drawSolution = false;
-
-    /*for(const auto& solution : solutions)
-    {
-        qDebug() << "* ";
-        for(const auto& c : solution)
-        {
-            qDebug() << c.x << c.y << "->";
-        }
-    }*/
 }
 
 void MainWindow::on_pushButton_Solution_clicked()
@@ -227,11 +299,18 @@ void MainWindow::on_actionSolution_by_Step_triggered()
     if(!solution_updated)
     {
         solutions.clear();
-        findPath_DFS(map, solutions);
+        findPath(map, solutions);
         std::sort(solutions.begin(), solutions.end(), [&](QVector<Coordinate> a, QVector<Coordinate> b) { return a.size() < b.size(); });
         ui->spinBox_SolutionNo->setMaximum(solutions.size());
     }
     solution_updated = true;
+
+    if(solutions.size() == 0)
+    {
+        QMessageBox::information(this, "Cannot find the path.", "This maze is unsolvable.");
+        return;
+    }
+
     if(show_solution_number == solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1)
     {
         show_solution_number = 0;
@@ -244,4 +323,10 @@ void MainWindow::on_actionSolution_by_Step_triggered()
 void MainWindow::on_pushButton_Step_clicked()
 {
     on_actionSolution_by_Step_triggered();
+}
+
+void MainWindow::on_actionConfiguration_triggered()
+{
+    Configuration* config = new Configuration(this);
+    config->show();
 }

@@ -9,7 +9,9 @@
 #include <QPainter>
 #include <QPoint>
 #include <QStack>
+#include <QQueue>
 #include <algorithm>
+#include "configuration.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -44,6 +46,8 @@ public:
 
     enum POINT{ACCESSIBLE, INACCESSIBLE, ENTRANCE, EXIT, VISITED};
 
+    enum FIND_PATH_METHOD{DFS, BFS} find_path_method = DFS;
+
 /*    struct POINT
     {
         STATE state_ = ACCESSIBLE;
@@ -73,11 +77,17 @@ public:
 
     int show_solution_number = 0;
 
+    int DFS_solution_limit = 10000;
+
     void paintEvent(QPaintEvent* event);
 
     void mouseReleaseEvent(QMouseEvent* event);
 
     void findPath_DFS(QVector<QVector<POINT>>, QVector<QVector<Coordinate>>&);
+
+    void findPath_BFS(QVector<QVector<POINT>>, QVector<QVector<Coordinate>>&);
+
+    void findPath(const QVector<QVector<POINT>>&, QVector<QVector<Coordinate>>&);
 
     bool canBeNexted(const QVector<QVector<POINT>>& Map, int i, int j);
 
@@ -94,7 +104,14 @@ private slots:
 
     void on_actionSolution_by_Step_triggered();
 
+    void on_pushButton_Step_clicked();
+
+    void on_actionConfiguration_triggered();
+
 private:
+
+    bool Stop_DFS_showed = false;
+
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
