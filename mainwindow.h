@@ -16,6 +16,7 @@
 #include <QTextStream>
 #include <QDataStream>
 #include <QCoreApplication>
+#include <QDesktopServices>
 #include <algorithm>
 #include "configuration.h"
 #include "game_finished.h"
@@ -142,6 +143,26 @@ private slots:
     void on_actionExit_triggered();
 
     void on_actionEnglish_triggered();
+
+    void on_actionGitHub_triggered();
+
+    void on_actionCSDN_triggered();
+
+    void on_actionStack_Overflow_triggered();
+
+    void on_actionBilibili_triggered();
+
+    void on_actionGitHub_2_triggered();
+
+    void on_actionCSDN_2_triggered();
+
+    void on_actionGitHub_Repository_triggered();
+
+    void on_actionCheck_Update_triggered();
+
+    void on_actionChinese_triggered();
+
+    void on_actionVersion_triggered();
 
 private:
 

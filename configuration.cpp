@@ -6,7 +6,12 @@ Configuration::Configuration(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Configuration)
 {
+    MainWindow* p = (MainWindow*)parentWidget();
     ui->setupUi(this);
+    if(p->find_path_method == MainWindow::BFS)
+    {
+        ui->radioButton_BFS->setChecked(true);
+    }
 }
 
 Configuration::~Configuration()
@@ -22,6 +27,7 @@ void Configuration::on_radioButton_DFS_toggled(bool checked)
         p->find_path_method = MainWindow::DFS;
         ui->spinBox_MaxNo->setEnabled(true);
         p->DFS_solution_limit = ui->spinBox_MaxNo->value();
+        p->solution_updated = false;
     }
 }
 
@@ -32,6 +38,7 @@ void Configuration::on_radioButton_BFS_toggled(bool checked)
         MainWindow* p = (MainWindow*)parentWidget();
         p->find_path_method = MainWindow::BFS;
         ui->spinBox_MaxNo->setEnabled(false);
+        p->solution_updated = false;
     }
 }
 

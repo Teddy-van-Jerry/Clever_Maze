@@ -8,8 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     on_spinBox_Row_valueChanged(10);
     timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
     setFocusPolicy(Qt::StrongFocus);
     setWindowTitle("Clever Maze - Unsaved Maze");
+    QLabel *permanent = new QLabel(this);
+    permanent->setText(tr("ALL RIGHTS RESERVED (C) 2021 Teddy van Jerry"));
+    ui->statusbar->addPermanentWidget(permanent);
 }
 
 MainWindow::~MainWindow()
@@ -62,6 +66,20 @@ void MainWindow::paintEvent(QPaintEvent* event)
 
     if(show_solution)
     {
+        if (ui->spinBox_SolutionNo->value() == 0)
+        {
+            if(ui->spinBox_SolutionNo->maximum() != 0)
+            {
+                qDebug() << "reset";
+                ui->spinBox_SolutionNo->setValue(1);
+            }
+            else
+            {
+                return;
+            }
+        }
+        int index = ui->spinBox_SolutionNo->value() - 1;
+        if(index == -1) index = 0;
         for(int i = 0; i < show_solution_number; i++)
         {
             // qDebug() << "drawLine";
@@ -71,10 +89,10 @@ void MainWindow::paintEvent(QPaintEvent* event)
             solution_pen.setStyle(Qt::DotLine);
 
             painter.setPen(solution_pen);
-            int x1 = Margin_L + (solutions[ui->spinBox_SolutionNo->value() - 1][i].y + 0.5) * Max_X / C_;
-            int y1 = Margin_T + (solutions[ui->spinBox_SolutionNo->value() - 1][i].x + 0.5) * Max_Y / R_;
-            int x2 = Margin_L + (solutions[ui->spinBox_SolutionNo->value() - 1][i + 1].y + 0.5) * Max_X / C_;
-            int y2 = Margin_T + (solutions[ui->spinBox_SolutionNo->value() - 1][i + 1].x + 0.5) * Max_Y / R_;
+            int x1 = Margin_L + (solutions[index][i].y + 0.5) * Max_X / C_;
+            int y1 = Margin_T + (solutions[index][i].x + 0.5) * Max_Y / R_;
+            int x2 = Margin_L + (solutions[index][i + 1].y + 0.5) * Max_X / C_;
+            int y2 = Margin_T + (solutions[index][i + 1].x + 0.5) * Max_Y / R_;
             painter.drawLine(x1, y1, x2, y2);
         }
     }
@@ -88,6 +106,8 @@ void MainWindow::paintEvent(QPaintEvent* event)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    if(!show_current) return;
+    if(!show_maze) return;
     int display_number = ui->lcdNumber_Step->intValue();
     releaseKeyboard();
     switch(event->key())
@@ -109,13 +129,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if(canBeNexted(map, current_location.x + 1, current_location.y)) { current_location.x++; display_number++; }
         break;
     default:
-        break;
+        return;
     }
     ui->lcdNumber_Step->display(display_number);
     update();
     if(current_location != entrance_ && current_location == exit_)
     {
-        timer->stop();
+        if(timer && timer->isActive()) timer->stop();
         // QMessageBox::information(this, "You Win", "You have found the path of the maze");
         Game_Finished* dialog = new Game_Finished(ui->lcdNumber_Time->intValue(), ui->lcdNumber_Step->intValue(), this);
         dialog->show();
@@ -239,35 +259,52 @@ void MainWindow::findPath_BFS(QVector<QVector<POINT>> Map, QVector<QVector<Coord
     while(1)
     {
         if(front_.empty()) return; // No solution
-        if(front_.front() == exit_)
-        {
-            Solutions.push_back(map_of_current_paths[exit_.x][exit_.y]);
-            return;
-        }
-        if(Map[front_.back().x][front_.back().y] != ENTRANCE) Map[front_.back().x][front_.back().y] = VISITED;
+        if (front_.size() > 1 && Map[front_.at(1).x][front_.at(1).y] == VISITED)
+            Map[front_.at(1).x][front_.at(1).y] = ACCESSIBLE;
+        if (Map[front_.back().x][front_.back().y] != ENTRANCE) Map[front_.back().x][front_.back().y] = VISITED;
         if(canBeNexted(Map, front_.back().x + 1, front_.back().y))
         {
             map_of_current_paths[front_.back().x + 1][front_.back().y] = map_of_current_paths[front_.back().x][front_.back().y];
             map_of_current_paths[front_.back().x + 1][front_.back().y].push_back(Coordinate(front_.back().x + 1, front_.back().y));
             front_.push_front(Coordinate(front_.back().x + 1, front_.back().y));
+            if(front_.front() == exit_)
+            {
+                Solutions.push_back(map_of_current_paths[exit_.x][exit_.y]);
+                return;
+            }
         }
         if(canBeNexted(Map, front_.back().x - 1, front_.back().y))
         {
             map_of_current_paths[front_.back().x - 1][front_.back().y] = map_of_current_paths[front_.back().x][front_.back().y];
             map_of_current_paths[front_.back().x - 1][front_.back().y].push_back(Coordinate(front_.back().x - 1, front_.back().y));
             front_.push_front(Coordinate(front_.back().x - 1, front_.back().y));
+            if(front_.front() == exit_)
+            {
+                Solutions.push_back(map_of_current_paths[exit_.x][exit_.y]);
+                return;
+            }
         }
         if(canBeNexted(Map, front_.back().x, front_.back().y + 1))
         {
             map_of_current_paths[front_.back().x][front_.back().y + 1] = map_of_current_paths[front_.back().x][front_.back().y];
             map_of_current_paths[front_.back().x][front_.back().y + 1].push_back(Coordinate(front_.back().x, front_.back().y + 1));
             front_.push_front(Coordinate(front_.back().x, front_.back().y + 1));
+            if(front_.front() == exit_)
+            {
+                Solutions.push_back(map_of_current_paths[exit_.x][exit_.y]);
+                return;
+            }
         }
         if(canBeNexted(Map, front_.back().x, front_.back().y - 1))
         {
             map_of_current_paths[front_.back().x][front_.back().y - 1] = map_of_current_paths[front_.back().x][front_.back().y];
             map_of_current_paths[front_.back().x][front_.back().y - 1].push_back(Coordinate(front_.back().x, front_.back().y - 1));
             front_.push_front(Coordinate(front_.back().x, front_.back().y - 1));
+            if(front_.front() == exit_)
+            {
+                Solutions.push_back(map_of_current_paths[exit_.x][exit_.y]);
+                return;
+            }
         }
         // map_of_current_paths[front_.back().x][front_.back().y].clear();
         front_.pop_back();
@@ -345,9 +382,13 @@ void MainWindow::on_actionSolution_triggered()
     if(solutions.size() == 0)
     {
         QMessageBox::information(this, "Cannot find the path.", "This maze is unsolvable.");
+        show_solution = false;
+        solution_updated = false;
         return;
     }
+    else show_solution = true;
 
+    if(ui->spinBox_SolutionNo->value() - 1 == -1) ui->spinBox_SolutionNo->setValue(1);
     show_solution_number = solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1;
     show_solution = true;
     ui->progressBar_Step->setValue(100);
@@ -374,14 +415,18 @@ void MainWindow::on_actionSolution_by_Step_triggered()
     if(solutions.size() == 0)
     {
         QMessageBox::information(this, "Cannot find the path.", "This maze is unsolvable.");
+        show_solution = false;
+        solution_updated = false;
         return;
     }
+    else show_solution = true;
 
     if(show_solution_number == solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1)
     {
         show_solution_number = 0;
     }
     show_solution_number++;
+    if(ui->spinBox_SolutionNo->value() - 1 == -1) ui->spinBox_SolutionNo->setValue(1);
     ui->progressBar_Step->setValue(100 * show_solution_number / (solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1));
     update();
 }
@@ -416,9 +461,8 @@ void MainWindow::on_commandLinkButton_Start_clicked()
     show_current = true;
     show_solution = false;
     update();
-    timer = new QTimer();
+    // timer = new QTimer();
     timer->start(1000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
 
     grabKeyboard();
     centralWidget()->setFocus();
@@ -437,7 +481,7 @@ void MainWindow::on_actionStop_triggered()
     if(timer && timer->isActive())
     {
         timer->stop();
-        delete timer;
+        // delete timer;
     }
     else
     {
@@ -445,6 +489,7 @@ void MainWindow::on_actionStop_triggered()
         ui->lcdNumber_Step->display(0);
     }
     show_current = false;
+    update();
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -553,4 +598,54 @@ void MainWindow::on_actionEnglish_triggered()
 {
     Help* help = new Help;
     help->show();
+}
+
+void MainWindow::on_actionGitHub_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/Teddy-van-Jerry"));
+}
+
+void MainWindow::on_actionCSDN_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://blog.csdn.net/weixin_50012998"));
+}
+
+void MainWindow::on_actionStack_Overflow_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://stackoverflow.com/users/15080514/teddy-van-jerry"));
+}
+
+void MainWindow::on_actionBilibili_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://space.bilibili.com/631883409"));
+}
+
+void MainWindow::on_actionGitHub_2_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/Teddy-van-Jerry/Clever_Maze/pulls")); // pull request
+}
+
+void MainWindow::on_actionCSDN_2_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://blog.csdn.net/weixin_50012998/article/details/115288003"));
+}
+
+void MainWindow::on_actionGitHub_Repository_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/Teddy-van-Jerry/Clever_Maze"));
+}
+
+void MainWindow::on_actionCheck_Update_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://blog.csdn.net/weixin_50012998/article/details/115287950"));
+}
+
+void MainWindow::on_actionChinese_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://blog.csdn.net/weixin_50012998/article/details/115288082"));
+}
+
+void MainWindow::on_actionVersion_triggered()
+{
+    QMessageBox::information(this, "Version", "Clever Maze 1.9\n2021/03/28");
 }

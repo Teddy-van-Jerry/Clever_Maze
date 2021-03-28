@@ -12,9 +12,9 @@ Game_Finished::Game_Finished(int time_used, int step_used, QWidget *parent) :
     ui->label_Step->setText("You used " + QString::number(step_used) + " steps to find the solution.");
     QVector<QVector<Coordinate>> solutions;
     p->findPath_BFS(p->map, solutions);
-    int step_best = solutions[0].size();
+    int step_best = solutions[0].size() - 1;
     ui->label_Best->setText("The best solution has " + QString::number(step_best) + " steps.");
-    int score = 70 * step_best / sqrt(step_used * time_used) > 100 ? 100 : 70 * step_best / sqrt(step_used * time_used);
+    int score = 50 * step_best / sqrt(step_used * time_used + 1) > 100 ? 100 : 50 * step_best / sqrt(step_used * time_used + 1);
     ui->label_Score->setText(QString::number(score));
 }
 
