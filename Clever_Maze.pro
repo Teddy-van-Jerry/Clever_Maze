@@ -10,15 +10,18 @@ CONFIG += c++11
 
 SOURCES += \
     configuration.cpp \
+    game_finished.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     configuration.h \
+    game_finished.h \
     mainwindow.h
 
 FORMS += \
     configuration.ui \
+    game_finished.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -29,3 +32,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Icons.qrc \
     Images.qrc
+
+RC_FILE += \
+    icon.rc
+
+DISTFILES += \
+    icon.rc

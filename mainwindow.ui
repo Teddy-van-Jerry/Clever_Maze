@@ -13,11 +13,28 @@
   <property name="windowTitle">
    <string>Clever Maze</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Icons.qrc">
+    <normaloff>:/Software Icon/Icon.ico</normaloff>:/Software Icon/Icon.ico</iconset>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedKingdom"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout" rowstretch="1,5" columnstretch="2,1">
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>546</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="0" column="1">
      <widget class="QLabel" name="label_Title">
       <property name="font">
@@ -40,7 +57,7 @@
     <item row="1" column="1">
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_Design">
        <property name="geometry">
@@ -255,23 +272,6 @@
         <string>Game</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1">
-        <item row="8" column="0">
-         <widget class="QPushButton" name="pushButton_Solution">
-          <property name="text">
-           <string>View Solution</string>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1">
-         <widget class="QSpinBox" name="spinBox_SolutionNo">
-          <property name="prefix">
-           <string>Solution </string>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0" colspan="2">
          <widget class="QCommandLinkButton" name="commandLinkButton_Start">
           <property name="font">
@@ -301,16 +301,6 @@
          <widget class="QProgressBar" name="progressBar_Step">
           <property name="value">
            <number>0</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0" colspan="2">
-         <widget class="QLabel" name="label_Time_2">
-          <property name="text">
-           <string>Solution View</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
           </property>
          </widget>
         </item>
@@ -353,22 +343,36 @@
           </property>
          </widget>
         </item>
+        <item row="8" column="1">
+         <widget class="QSpinBox" name="spinBox_SolutionNo">
+          <property name="prefix">
+           <string>Solution </string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QPushButton" name="pushButton_Solution">
+          <property name="text">
+           <string>View Solution</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="2">
+         <widget class="QLabel" name="label_Time_2">
+          <property name="text">
+           <string>Solution View</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
-    </item>
-    <item row="1" column="0">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>546</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>
@@ -429,7 +433,27 @@
     <addaction name="actionVersion"/>
     <addaction name="actionCheck_Update"/>
    </widget>
+   <widget class="QMenu" name="menuMaze">
+    <property name="title">
+     <string>Maze(&amp;M)</string>
+    </property>
+    <addaction name="actionSolution"/>
+    <addaction name="actionSolution_by_Step"/>
+    <addaction name="actionStop"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit_E">
+    <property name="title">
+     <string>Edit(&amp;E)</string>
+    </property>
+    <addaction name="actionAuto_Maze"/>
+    <addaction name="separator"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="actionClear"/>
+   </widget>
    <addaction name="menuFile_F"/>
+   <addaction name="menuEdit_E"/>
+   <addaction name="menuMaze"/>
    <addaction name="menuHelp_H"/>
    <addaction name="menuMore_O"/>
   </widget>

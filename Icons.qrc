@@ -28,5 +28,6 @@
         <file>Menu Icon/Undo.svg</file>
         <file>Menu Icon/Version.png</file>
         <file>Menu Icon/Import.svg</file>
+        <file>Software Icon/Icon.ico</file>
     </qresource>
 </RCC>

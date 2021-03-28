@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <algorithm>
 #include "configuration.h"
+#include "game_finished.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -68,7 +69,7 @@ public:
 
     bool started = false;
 
-    bool drawSolution = false;
+    bool show_solution = false;
 
     bool solution_updated = false;
 

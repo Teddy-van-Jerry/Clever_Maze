@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     on_spinBox_Row_valueChanged(10);
     timer = new QTimer(this);
     setFocusPolicy(Qt::StrongFocus);
-    this->grabKeyboard();
 }
 
 MainWindow::~MainWindow()
@@ -46,10 +45,10 @@ void MainWindow::paintEvent(QPaintEvent* event)
             QColor colour;
             switch(map[i][j])
             {
-            case ACCESSIBLE:   colour = Qt::yellow; break;
-            case INACCESSIBLE: colour = Qt::blue;   break;
-            case ENTRANCE:     colour = Qt::red;    break;
-            case EXIT:         colour = Qt::green;  break;
+            case ACCESSIBLE:   colour = QColor(0XFFFFE0); break;
+            case INACCESSIBLE: colour = QColor(0X000080); break;
+            case ENTRANCE:     colour = QColor(0XFF8C00); break;
+            case EXIT:         colour = QColor(0X66CDAA); break;
             default: break;
             }
             painter.fillRect(Margin_L + j * Max_X / C_,
@@ -60,7 +59,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
         }
     }
 
-    if(drawSolution)
+    if(show_solution)
     {
         for(int i = 0; i < show_solution_number; i++)
         {
@@ -79,9 +78,8 @@ void MainWindow::paintEvent(QPaintEvent* event)
         }
     }
 
-    if(show_current)
+    if(mode == GAME && show_current)
     {
-        // painter.setBrush(QColor(qRgba(255, 255, 255, 150)));
         painter.drawImage(QRectF(Margin_L + current_location.y * Max_X / C_, Margin_T + current_location.x * Max_Y / R_, Max_X / C_ + 1, Max_Y / R_ + 1),
                           QImage(":/Images/Current.png"));
     }
@@ -89,31 +87,38 @@ void MainWindow::paintEvent(QPaintEvent* event)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    int display_number = ui->lcdNumber_Step->intValue();
+    releaseKeyboard();
     switch(event->key())
     {
     case Qt::Key_Left:
         qDebug() << "left";
-        if(canBeNexted(map, current_location.x, current_location.y - 1)) current_location.y--;
+        if(canBeNexted(map, current_location.x, current_location.y - 1)) { current_location.y--; display_number++; }
         break;
     case Qt::Key_Right:
         qDebug() << "right";
-        if(canBeNexted(map, current_location.x, current_location.y + 1)) current_location.y++;
+        if(canBeNexted(map, current_location.x, current_location.y + 1)) { current_location.y++; display_number++; }
         break;
     case Qt::Key_Up:
         qDebug() << "up";
-        if(canBeNexted(map, current_location.x - 1, current_location.y)) current_location.x--;
+        if(canBeNexted(map, current_location.x - 1, current_location.y)) { current_location.x--; display_number++; }
         break;
     case Qt::Key_Down:
         qDebug() << "down";
-        if(canBeNexted(map, current_location.x + 1, current_location.y)) current_location.x++;
+        if(canBeNexted(map, current_location.x + 1, current_location.y)) { current_location.x++; display_number++; }
         break;
     default:
         break;
     }
+    ui->lcdNumber_Step->display(display_number);
     update();
     if(current_location != entrance_ && current_location == exit_)
     {
-        QMessageBox::information(this, "You Win", "You have found the path of the maze");
+        timer->stop();
+        // QMessageBox::information(this, "You Win", "You have found the path of the maze");
+        Game_Finished* dialog = new Game_Finished(ui->lcdNumber_Time->intValue(), ui->lcdNumber_Step->intValue(), this);
+        dialog->show();
+        show_current = false;
     }
 }
 
@@ -138,7 +143,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event)
     int index_1 = (y - Margin_T) * R_ / Max_Y;
     map[index_1][index_2] = p;
     qDebug() << Max_X << Max_Y << index_1 << index_2;
-    drawSolution = false;
+    show_solution = false;
     solution_updated = false;
     ui->progressBar_Step->setValue(0);
     update();
@@ -294,7 +299,7 @@ void MainWindow::on_spinBox_Row_valueChanged(int arg1)
     QVector<POINT> row(ui->spinBox_Column->value(), ACCESSIBLE);
     map.clear();
     for(int i = 0; i != arg1; i++) map.push_back(row);
-    drawSolution = false;
+    show_solution = false;
     solution_updated = false;
     ui->progressBar_Step->setValue(0);
     update();
@@ -305,7 +310,7 @@ void MainWindow::on_spinBox_Column_valueChanged(int arg1)
     QVector<POINT> row(arg1, ACCESSIBLE);
     map.clear();
     for(int i = 0; i != ui->spinBox_Row->value(); i++) map.push_back(row);
-    drawSolution = false;
+    show_solution = false;
     solution_updated = false;
     ui->progressBar_Step->setValue(0);
     update();
@@ -314,7 +319,10 @@ void MainWindow::on_spinBox_Column_valueChanged(int arg1)
 void MainWindow::on_toolBox_currentChanged(int index)
 {
     mode = MODE(index);
-    if(mode == GAME) show_maze = false;
+    if(mode == GAME)
+    {
+        show_maze = false;
+    }
     qDebug() << "Page changed:" << index;
     update();
 }
@@ -340,7 +348,7 @@ void MainWindow::on_actionSolution_triggered()
     }
 
     show_solution_number = solutions[ui->spinBox_SolutionNo->value() - 1].size() - 1;
-    drawSolution = true;
+    show_solution = true;
     ui->progressBar_Step->setValue(100);
     update();
 }
@@ -401,11 +409,18 @@ void MainWindow::on_commandLinkButton_Start_clicked()
     }
     current_location = entrance_;
 
+    ui->lcdNumber_Time->display(0);
+    ui->lcdNumber_Step->display(0);
     show_maze = true;
     show_current = true;
+    show_solution = false;
     update();
+    timer = new QTimer();
     timer->start(1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+
+    grabKeyboard();
+    centralWidget()->setFocus();
 
     // setFocusPolicy(Qt::StrongFocus);
 }
@@ -417,5 +432,16 @@ void MainWindow::updateTime()
 
 void MainWindow::on_actionStop_triggered()
 {
-    timer->stop();
+    releaseKeyboard();
+    if(timer && timer->isActive())
+    {
+        timer->stop();
+        delete timer;
+    }
+    else
+    {
+        ui->lcdNumber_Time->display(0);
+        ui->lcdNumber_Step->display(0);
+    }
+    show_current = false;
 }
