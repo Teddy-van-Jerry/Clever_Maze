@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Help</class>
+ <widget class="QMainWindow" name="Help">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Help</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTextBrowser" name="textBrowser">
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="locale">
+       <locale language="English" country="UnitedKingdom"/>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Consolas'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600;&quot;&gt;Help&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Section 1 Design a maze&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  To design a maze, you should &lt;span style=&quot; color:#00aa00;&quot;&gt;new&lt;/span&gt; (&lt;span style=&quot; color:#aa00ff;&quot;&gt;Ctrl + N&lt;/span&gt;, &lt;img src=&quot;:/Menu Icon/New.svg&quot; /&gt;) or &lt;span style=&quot; color:#00aa00;&quot;&gt;open&lt;/span&gt; (&lt;span style=&quot; color:#aa00ff;&quot;&gt;Ctrl + O&lt;/span&gt;, &lt;img src=&quot;:/Menu Icon/Open.svg&quot; /&gt;) a maze. Then you can adjust the row and column number. For each of the space in the maze, they can be &lt;span style=&quot; color:#0000ff;&quot;&gt;ACCESSIBLE&lt;/span&gt;, &lt;span style=&quot; color:#0000ff;&quot;&gt;INACCESSIBLE&lt;/span&gt;, &lt;span style=&quot; color:#0000ff;&quot;&gt;ENTRANCE&lt;/span&gt; or &lt;span style=&quot; color:#0000ff;&quot;&gt;EXIT&lt;/span&gt;. You can &lt;span style=&quot; color:#00aa00;&quot;&gt;save&lt;/span&gt; (&lt;span style=&quot; color:#aa00ff;&quot;&gt;Ctrl + S&lt;/span&gt;, &lt;img src=&quot;:/Menu Icon/Save.svg&quot; /&gt;)the maze after editing.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Section 2 Play the game&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Click the &lt;span style=&quot; color:#00aa00;&quot;&gt;Start&lt;/span&gt;, you can use the the key UP, DOWN, LEFT, RIGHT to move until you get from &lt;span style=&quot; color:#0000ff;&quot;&gt;ENTRANCE&lt;/span&gt; to &lt;span style=&quot; color:#5500ff;&quot;&gt;EXIT&lt;/span&gt;. Click the &lt;span style=&quot; color:#00aa00;&quot;&gt;Stop &lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;(&lt;/span&gt;&lt;img src=&quot;:/Menu Icon/Stop.svg&quot; /&gt;&lt;span style=&quot; color:#000000;&quot;&gt;)&lt;/span&gt;, and the game will stop.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  You can use &lt;span style=&quot; color:#aa00ff;&quot;&gt;F5&lt;/span&gt; (&lt;img src=&quot;:/Menu Icon/Create Images in Range.svg&quot; /&gt;) to &lt;span style=&quot; color:#00aa00;&quot;&gt;view solutions&lt;/span&gt; and &lt;span style=&quot; color:#aa00ff;&quot;&gt;F10&lt;/span&gt; (&lt;img src=&quot;:/Menu Icon/Create Image.svg&quot; /&gt;) to &lt;span style=&quot; color:#00aa00;&quot;&gt;view solutions step by step&lt;/span&gt;, change the Solution number to view other results.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Section 3 Other Tips&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  In &lt;span style=&quot; color:#00aa00;&quot;&gt;Configuration&lt;/span&gt; (&lt;img src=&quot;:/Menu Icon/Route_Tool.svg&quot; /&gt;), you can change the searching method. The default is DFS with the solution limit 10000.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt; color:#9d9d9d;&quot;&gt;This is the early version of Clever Maze, contact &lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; color:#9d9d9d;&quot;&gt;Teddy van Jerry&lt;/span&gt;&lt;span style=&quot; font-size:9pt; color:#9d9d9d;&quot;&gt; for more information.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuActions">
+    <property name="title">
+     <string>Actions</string>
+    </property>
+    <addaction name="actionBack_to_MainWindow"/>
+   </widget>
+   <addaction name="menuActions"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionBack_to_MainWindow">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/Menu Icon/Previous.svg</normaloff>:/Menu Icon/Previous.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Back to MainWindow</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="Icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

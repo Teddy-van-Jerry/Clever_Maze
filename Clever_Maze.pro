@@ -11,17 +11,20 @@ CONFIG += c++11
 SOURCES += \
     configuration.cpp \
     game_finished.cpp \
+    help.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     configuration.h \
     game_finished.h \
+    help.h \
     mainwindow.h
 
 FORMS += \
     configuration.ui \
     game_finished.ui \
+    help.ui \
     mainwindow.ui
 
 # Default rules for deployment.

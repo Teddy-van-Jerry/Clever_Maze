@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     on_spinBox_Row_valueChanged(10);
     timer = new QTimer(this);
     setFocusPolicy(Qt::StrongFocus);
+    setWindowTitle("Clever Maze - Unsaved Maze");
 }
 
 MainWindow::~MainWindow()
@@ -22,7 +23,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
     int Margin_L = 50;
     int Margin_R = 10;
     int Margin_T = 35;
-    int Margin_B = 10;
+    int Margin_B = 20;
     int Max_X = window()->width() * 2 / 3 - Margin_L - Margin_R;
     int Max_Y = window()->height() - Margin_T - Margin_B;
 
@@ -129,7 +130,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event)
     int Margin_L = 50;
     int Margin_R = 10;
     int Margin_T = 35;
-    int Margin_B = 10;
+    int Margin_B = 20;
     int Max_X = window()->width() * 2 / 3 - Margin_L - Margin_R;
     int Max_Y = window()->height() - Margin_T - Margin_B;
     int R_ = ui->spinBox_Row->value();
@@ -444,4 +445,112 @@ void MainWindow::on_actionStop_triggered()
         ui->lcdNumber_Step->display(0);
     }
     show_current = false;
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    QDir check(QCoreApplication::applicationDirPath() + "/Maze");
+    if(!check.exists())
+    {
+        check.mkpath(check.absolutePath());
+    }
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                    tr("Create a new maze"),
+                                    QCoreApplication::applicationDirPath() + "/Maze/New Maze",
+                                    tr("Clever Maze File (*.clm)"));
+    if(fileName.isEmpty()) return;
+    saved = true;
+    setWindowTitle("Clever Maze - " + fileName);
+    QFile new_file(fileName);
+    new_file.open(QDataStream::WriteOnly);
+    QDataStream out(&new_file);
+    char magic[8] {'T', 'v', 'J', 'c', 'l', 'm', 3, 28};
+    for(const auto& c : magic) out << c;
+    out << ui->spinBox_Row->value() << ui->spinBox_Column->value();
+    for(int i = 0; i != ui->spinBox_Row->value(); i++)
+    {
+        for(int j = 0; j!= ui->spinBox_Column->value(); j++)
+        {
+            out << map[i][j];
+        }
+    }
+    new_file.close();
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if(!saved)
+    {
+        on_actionNew_triggered();
+        return;
+    }
+    saved = true;
+    QFile saved_file(windowTitle().right(windowTitle().size() - 14));
+    saved_file.open(QDataStream::WriteOnly);
+    QDataStream out(&saved_file);
+    char magic[8] {'T', 'v', 'J', 'c', 'l', 'm', 3, 28};
+    for(const auto& c : magic) out << c;
+    out << ui->spinBox_Row->value() << ui->spinBox_Column->value();
+    for(int i = 0; i != ui->spinBox_Row->value(); i++)
+    {
+        for(int j = 0; j!= ui->spinBox_Column->value(); j++)
+        {
+            out << map[i][j];
+        }
+    }
+    saved_file.close();
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                    tr("Create a new maze"),
+                                    QCoreApplication::applicationDirPath() + "/Maze",
+                                    tr("Clever Maze File (*.clm)"));
+    if(fileName.isEmpty()) return;
+    setWindowTitle("Clever Maze - " + fileName);
+    saved = true;
+    QFile opened_file(fileName);
+    opened_file.open(QDataStream::ReadOnly);
+    QDataStream in(&opened_file);
+    char magic[8] {'T', 'v', 'J', 'c', 'l', 'm', 3, 28};
+    for(const auto& c : magic)
+    {
+        char check_c;
+        in >> check_c;
+        if(check_c != c)
+        {
+            QMessageBox::critical(this, "Can not open", "This file may be damaged or should not be opened with Clever Maze!");
+        }
+    }
+    int r_, c_;
+    in >> r_ >> c_;
+    ui->spinBox_Row->setValue(r_);
+    ui->spinBox_Column->setValue(c_);
+    QVector<QVector<POINT>> in_map;
+    for(int i = 0; i != r_; i++)
+    {
+        QVector<POINT> in_line;
+        for(int j = 0; j!= c_; j++)
+        {
+            POINT point;
+            in >> point;
+            in_line.push_back(point);
+        }
+        in_map.push_back(in_line);
+    }
+    opened_file.close();
+    map = in_map;
+    update();
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    close();
+}
+
+void MainWindow::on_actionEnglish_triggered()
+{
+    Help* help = new Help;
+    help->show();
 }

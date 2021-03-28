@@ -11,9 +11,15 @@
 #include <QStack>
 #include <QQueue>
 #include <QTimer>
+#include <QFile>
+#include <QFileDialog>
+#include <QTextStream>
+#include <QDataStream>
+#include <QCoreApplication>
 #include <algorithm>
 #include "configuration.h"
 #include "game_finished.h"
+#include "help.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -77,6 +83,8 @@ public:
 
     bool show_current = false;
 
+    bool saved = false;
+
     Coordinate entrance_, exit_, current_location;
 
     QVector<QVector<Coordinate>> solutions;
@@ -124,6 +132,16 @@ private slots:
     void on_commandLinkButton_Start_clicked();
 
     void on_actionStop_triggered();
+
+    void on_actionNew_triggered();
+
+    void on_actionSave_triggered();
+
+    void on_actionOpen_triggered();
+
+    void on_actionExit_triggered();
+
+    void on_actionEnglish_triggered();
 
 private:
 
